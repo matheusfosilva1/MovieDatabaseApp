@@ -1,21 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Modal, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Modal } from 'react-native';
 import Constants from 'expo-constants';
+import { Card } from 'react-native-paper';
 
 
 export default function App() {
 
   const [movie, setMovie] = useState(null);
-  const [abas, setAbas] = useState(0);
 
-  let imageUri = 'https://image.tmdb.org/t/p/original/';
-
+  const imageUri = 'https://image.tmdb.org/t/p/original/';
 
   useEffect(() => {
 
     //requisição vai aqui 
-    fetch('https://api.themoviedb.org/3/movie/popular?api_key=506fadb0256c13349acc05dabebf9604&language=en-US', { //access the api by the html host
+    fetch('https://api.themoviedb.org/3/movie/popular?api_key=506fadb0256c13349acc05dabebf9604&language=en-US&page=1', { //access the api by the html host
       method: 'POST'
     })
       .then(response => response.json())
@@ -25,88 +24,168 @@ export default function App() {
         console.log(json);
       })
 
-
   }, [])
 
+  {/*
 
-  if (movie != null) { //validade state to evite error 
+  
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const MostrarDetalhes = (val) => {
+
+    console.log(val);
+
+
     return (
-      <ScrollView>
 
-        <View style={styles.Header}>
-          <Text style={{ color: 'white', fontSize: 25, textAlign: 'center', marginTop: Constants.statusBarHeight }}>Movie DataBase</Text>
+      <Modal
+        animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+          
 
-        </View>
+        <ScrollView contentContainerStyle={styles.ScrollView} >
 
-        {
-          movie.results.map((val) => { //foreach to request info from API 
-            return (
+          <View style={styles.modalView} >
 
-              <View style={styles.Body}>
+            <Text style={styles.CardText}>{val.original_title}</Text>
 
-                <Text style={{ textAlign: 'center', fontSize: 20, width: '100%', paddingBottom: 10 }} >{val.original_title}</Text> 
-                <Image style={{ flex: 1, width: '50%', height: '50%', paddingHorizontal: 100, justifyContent: 'center' }} source={{ uri: imageUri + val.backdrop_path }}></Image>
-                <Text numberOfLines={5} style={{ textAlign: 'center', paddingTop: 10 }} >{val.overview}</Text>
+            <Image style={styles.Image} source={{ uri: imageUri + val.backdrop_path }} />
 
-              </View>
+            <TouchableOpacity style={styles.CardButton} onPress={() => setModalVisible(!modalVisible)} >
+              <Text style={styles.CardButtonText}>Voltar </Text>
+            </TouchableOpacity>
+
+          </View>
+
+        </ScrollView>
+
+     
+
+      </Modal>
+
+    )
+
+  }
+ */}
+
+  if (movie != null) {
+
+    return (
+
+      <View style={styles.conteiner} >
+
+        <StatusBar style='light' />
+
+        <View style={styles.HeaderStyle} ><Text style={styles.HeaderText}  > The Movie's </Text></View>
+
+        <ScrollView contentContainerStyle={styles.ScrollView} >
+
+
+          {
+            movie.results.map((val) => {
+              return (
+
+                  <Card style={styles.Card} >
+
+                    <Text style={styles.CardText}>{val.original_title}</Text>
+
+                    <Image style={styles.Image} source={{ uri: imageUri + val.backdrop_path }} />
+
+                    <Text numberOfLines={6} style={styles.overview} >{val.overview}</Text>
+
+                  </Card>
+
+                
+
+              )
+            }
 
             )
-          })
-        }
+          }
 
-        
+        </ScrollView>
 
-      </ScrollView>
+      </View >
 
     )
 
-  } else { //show screen loading wait data are coming 
+  } else {
+
     return (
-      <View>
-        <View style={styles.Header}>
-          <Text style={{ color: 'white', fontSize: 25, textAlign: 'center', marginTop: Constants.statusBarHeight }}>Movie DataBase</Text>
-        </View>
-        <View><Text>Loading...</Text></View>
+
+      <View style={styles.conteiner} >
+        <View style={styles.HeaderStyle} ><Text style={styles.HeaderText}  > The Movie's </Text></View>
+        <View><Text >Loading...</Text></View>
       </View>
+
     )
+
   }
 
 }
 
 const styles = StyleSheet.create({
 
-  container: {
+  conteiner: {
     flex: 1,
     backgroundColor: 'white',
   },
 
-  Header: {
+  HeaderStyle: {
     backgroundColor: 'black',
-    width: '100%',
-    height: 100
+    height: 100,
+    justifyContent: 'center'
   },
 
-  Body: {
+  HeaderText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    paddingTop: 15,
+    fontWeight: 'bold',
+  },
 
-    flex: 1,
-    flexDirection: 'row',
+  ScrollView: {
+
     flexWrap: 'wrap',
-    width: '95%',
-    height: 300,
-    marginVertical: 15,
-    marginHorizontal: 10,
-    padding: 10,
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 25
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 10
 
   },
 
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 15,
-    borderRadius: 7
+  Card: {
+
+    flexDirection: 'row',
+    backgroundColor: 'black',
+    width: '75%',
+    padding: 10,
+
+  },
+
+  CardText: {
+
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 10,
+
+  },
+
+  Image: {
+    width: '100%',
+    height: 200,
+  },
+
+  overview: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: 'white'
   }
+
+
 
 });
