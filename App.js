@@ -42,17 +42,11 @@ export default function App() {
             movie.results.map((val) => {
               return (
 
-                  <Card style={styles.Card} >
-
-                    <Text style={styles.CardText}>{val.original_title}</Text> 
-
-                    <Image style={styles.Image} source={{ uri: imageUri + val.backdrop_path }} />
-
-                    <Text numberOfLines={6} style={styles.overview} >Clique para saber mais</Text>
-
-                    {/* <Text numberOfLines={6} style={styles.overview} >{val.overview}</Text> */}
-
-                  </Card>
+                <Card style={styles.Card} >
+                  <Text style={styles.CardText}>{val.original_title}</Text>
+                  <Image style={styles.Image} source={{ uri: imageUri + val.backdrop_path }} />
+                  <Text numberOfLines={4} style={styles.overview} >{val.overview}</Text>
+                </Card>
 
               )
             }
